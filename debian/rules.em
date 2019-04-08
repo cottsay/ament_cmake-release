@@ -18,6 +18,9 @@ export PKG_CONFIG_PATH=@(InstallationPrefix)/lib/pkgconfig
 # 	https://github.com/ros-infrastructure/bloom/issues/327
 export DEB_CXXFLAGS_MAINT_APPEND=-DNDEBUG
 
+# Needed to bootstrap since the ros_workspace package does not yet exist.
+export PYTHONPATH=/opt/ros/dashing/lib/python3.6/site-packages
+
 %:
 	dh $@@ -v --buildsystem=cmake
 
