@@ -1,0 +1,12 @@
+Source: ros-eloquent-ament-cmake-pytest
+Section: misc
+Priority: optional
+Maintainer: Dirk Thomas <dthomas@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), ros-eloquent-ament-cmake-core, ros-eloquent-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-eloquent-ament-cmake-pytest
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-pytest, ros-eloquent-ament-cmake-core, ros-eloquent-ament-cmake-test, ros-eloquent-ros-workspace
+Description: The ability to run Python tests using pytest in the ament buildsystem in CMake.
