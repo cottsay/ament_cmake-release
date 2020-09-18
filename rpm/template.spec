@@ -2,42 +2,46 @@
 %bcond_without weak_deps
 
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
-%global __provides_exclude_from ^@(InstallationPrefix)/.*$
-%global __requires_exclude_from ^@(InstallationPrefix)/.*$
+%global __provides_exclude_from ^/opt/ros/eloquent/.*$
+%global __requires_exclude_from ^/opt/ros/eloquent/.*$
 
-Name:           @(Package)
-Version:        @(Version)
-Release:        @(RPMInc)%{?dist}%{?release_suffix}
-Summary:        ROS @(Name) package
+Name:           ros-eloquent-ament-cmake-core
+Version:        0.8.2
+Release:        2%{?dist}%{?release_suffix}
+Summary:        ROS ament_cmake_core package
 
-License:        @(License)
-@[if Homepage and Homepage != '']URL:            @(Homepage)@\n@[end if]@
+License:        Apache License 2.0
 Source0:        %{name}-%{version}.tar.gz
-@[if NoArch]@\nBuildArch:      noarch@\n@[end if]@
 
-@[for p in Depends]Requires:       @p@\n@[end for]@
-@[for p in BuildDepends]BuildRequires:  @p@\n@[end for]@
-@[for p in Conflicts]Conflicts:      @p@\n@[end for]@
-@[for p in Replaces]Obsoletes:      @p@\n@[end for]@
-@[for p in Provides]Provides:       @p@\n@[end for]@
-@[if Supplements]@\n%if 0%{?with_weak_deps}
-@[for p in Supplements]Supplements:    @p@\n@[end for]@
-%endif@\n@[end if]@
+Requires:       cmake
+Requires:       python3-catkin_pkg
+Requires:       ros-eloquent-ament-package
+BuildRequires:  cmake
+BuildRequires:  python3-catkin_pkg
+BuildRequires:  ros-eloquent-ament-package
+Provides:       %{name}-devel = %{version}-%{release}
+Provides:       %{name}-doc = %{version}-%{release}
+Provides:       %{name}-runtime = %{version}-%{release}
 
 %description
-@(Description)
+The core of the ament buildsystem in CMake. Several subcomponents provide
+specific funtionalities: * environment: provide prefix-level setup files *
+environment_hooks: provide package-level setup files and environment hooks *
+index: store information in an index and retrieve them without crawling *
+package_templates: templates from the ament_package Python package *
+symlink_install: use symlinks for CMake install commands
 
 %prep
 %autosetup
 
 %build
 # Needed to bootstrap since the ros_workspace package does not yet exist.
-export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+export PYTHONPATH=/opt/ros/eloquent/lib/python%{python3_version}/site-packages
 
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+if [ -f "/opt/ros/eloquent/setup.sh" ]; then . "/opt/ros/eloquent/setup.sh"; fi
 mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
 %cmake3 \
     -UINCLUDE_INSTALL_DIR \
@@ -46,8 +50,8 @@ mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
     -USHARE_INSTALL_PREFIX \
     -ULIB_SUFFIX \
     -DCMAKE_INSTALL_LIBDIR="lib" \
-    -DCMAKE_INSTALL_PREFIX="@(InstallationPrefix)" \
-    -DCMAKE_PREFIX_PATH="@(InstallationPrefix)" \
+    -DCMAKE_INSTALL_PREFIX="/opt/ros/eloquent" \
+    -DCMAKE_PREFIX_PATH="/opt/ros/eloquent" \
     -DSETUPTOOLS_DEB_LAYOUT=OFF \
     ..
 
@@ -55,18 +59,18 @@ mkdir -p obj-%{_target_platform} && cd obj-%{_target_platform}
 
 %install
 # Needed to bootstrap since the ros_workspace package does not yet exist.
-export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+export PYTHONPATH=/opt/ros/eloquent/lib/python%{python3_version}/site-packages
 
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+if [ -f "/opt/ros/eloquent/setup.sh" ]; then . "/opt/ros/eloquent/setup.sh"; fi
 %make_install -C obj-%{_target_platform}
 
 %if 0%{?with_tests}
 %check
 # Needed to bootstrap since the ros_workspace package does not yet exist.
-export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+export PYTHONPATH=/opt/ros/eloquent/lib/python%{python3_version}/site-packages
 
 # Look for a Makefile target with a name indicating that it runs tests
 TEST_TARGET=$(%__make -qp -C obj-%{_target_platform} | sed "s/^\(test\|check\):.*/\\1/;t f;d;:f;q0")
@@ -74,16 +78,15 @@ if [ -n "$TEST_TARGET" ]; then
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
-if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.sh"; fi
+if [ -f "/opt/ros/eloquent/setup.sh" ]; then . "/opt/ros/eloquent/setup.sh"; fi
 %make_build -C obj-%{_target_platform} $TEST_TARGET || echo "RPM TESTS FAILED"
 else echo "RPM TESTS SKIPPED"; fi
 %endif
 
 %files
-@(InstallationPrefix)
+/opt/ros/eloquent
 
-%changelog@
-@[for change_version, (change_date, main_name, main_email) in changelogs]
-* @(change_date) @(main_name) <@(main_email)> - @(change_version)
+%changelog
+* Fri Sep 18 2020 Dirk Thomas <dthomas@osrfoundation.org> - 0.8.2-2
 - Autogenerated by Bloom
-@[end for]
+
