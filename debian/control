@@ -1,0 +1,12 @@
+Source: ros-eloquent-ament-cmake
+Section: misc
+Priority: optional
+Maintainer: Dirk Thomas <dthomas@osrfoundation.org>
+Build-Depends: debhelper (>= 9.0.0), cmake, ros-eloquent-ament-cmake-core, ros-eloquent-ament-cmake-export-dependencies, ros-eloquent-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-eloquent-ament-cmake
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, cmake, ros-eloquent-ament-cmake-core, ros-eloquent-ament-cmake-export-definitions, ros-eloquent-ament-cmake-export-dependencies, ros-eloquent-ament-cmake-export-include-directories, ros-eloquent-ament-cmake-export-interfaces, ros-eloquent-ament-cmake-export-libraries, ros-eloquent-ament-cmake-export-link-flags, ros-eloquent-ament-cmake-libraries, ros-eloquent-ament-cmake-python, ros-eloquent-ament-cmake-target-dependencies, ros-eloquent-ament-cmake-test, ros-eloquent-ament-cmake-version, ros-eloquent-ros-workspace
+Description: The entry point package for the ament buildsystem in CMake.
