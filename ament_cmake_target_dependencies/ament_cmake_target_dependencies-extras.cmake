@@ -20,6 +20,4 @@ find_package(ament_cmake_include_directories QUIET REQUIRED)
 find_package(ament_cmake_libraries QUIET REQUIRED)
 
 include(
-  "${ament_cmake_target_dependencies_DIR}/ament_get_recursive_properties.cmake")
-include(
   "${ament_cmake_target_dependencies_DIR}/ament_target_dependencies.cmake")

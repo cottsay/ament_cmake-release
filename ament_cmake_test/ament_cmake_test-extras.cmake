@@ -21,7 +21,7 @@ option(BUILD_TESTING "Build the testing tree." ON)
 # option()
 set(
   AMENT_TEST_RESULTS_DIR "${CMAKE_BINARY_DIR}/test_results"
-  CACHE PATH "The path where test results are generated"
+  CACHE STRING "The path where test results are generated"
 )
 
 if(BUILD_TESTING)
@@ -39,4 +39,3 @@ endif()
 find_package(ament_cmake_core QUIET REQUIRED)
 
 include("${ament_cmake_test_DIR}/ament_add_test.cmake")
-include("${ament_cmake_test_DIR}/ament_add_test_label.cmake")

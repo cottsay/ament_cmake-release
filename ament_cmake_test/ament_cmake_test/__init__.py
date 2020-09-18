@@ -20,7 +20,6 @@ import os
 import re
 import subprocess
 import sys
-import time
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import ParseError
 from xml.sax.saxutils import quoteattr
@@ -34,14 +33,6 @@ def separate_env_vars(env_str, env_argument_name, parser):
     key = env_str[0:index]
     value = env_str[index + 1:]
     return key, value
-
-
-def return_code(value):
-    value = int(value)
-    if value < 0 or value > 255:
-        raise argparse.ArgumentTypeError(
-            'Return code must be less than 256 and greater or equal to 0')
-    return value
 
 
 def main(argv=sys.argv[1:]):
@@ -81,11 +72,6 @@ def main(argv=sys.argv[1:]):
         action='store_true',
         default=False,
         help='Skip the test')
-    parser.add_argument(
-        '--skip-return-code',
-        type=return_code,
-        help="If the test returns this value and doesn't generate a result file, "
-             'create one stating that the test was skipped.')
 
     if '--command' in argv:
         index = argv.index('--command')
@@ -117,7 +103,7 @@ def main(argv=sys.argv[1:]):
     # in case the command segfaults or timeouts and does not generate one
     failure_result_file = _generate_result(
         args.result_file,
-        error_message='The test did not generate a result file.')
+        failure_message='The test did not generate a result file.')
     with open(args.result_file, 'w') as h:
         h.write(failure_result_file)
 
@@ -126,7 +112,8 @@ def main(argv=sys.argv[1:]):
     output_handle = None
     if args.output_file:
         output_path = os.path.dirname(args.output_file)
-        os.makedirs(output_path, exist_ok=True)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
         output_handle = open(args.output_file, 'wb')
 
     try:
@@ -194,8 +181,6 @@ def _run_test(parser, args, failure_result_file, output_handle):
     encodings = ['utf-8']
     if locale.getpreferredencoding(False) not in encodings:
         encodings.append(locale.getpreferredencoding(False))
-    
-    start_time = time.monotonic()
 
     try:
         proc = subprocess.Popen(
@@ -232,14 +217,12 @@ def _run_test(parser, args, failure_result_file, output_handle):
         output += str(e)
         rc = 1
 
-    test_time = time.monotonic() - start_time
-
     if not rc and args.generate_result_on_success:
         # generate result file with one passed test
         # if it was expected that no result file was generated
         # and the command returned with code zero
         log("-- run_test.py: generate result file '%s' with successful test" % args.result_file)
-        success_result_file = _generate_result(args.result_file, test_time=test_time)
+        success_result_file = _generate_result(args.result_file)
         with open(args.result_file, 'w') as h:
             h.write(success_result_file)
 
@@ -249,20 +232,14 @@ def _run_test(parser, args, failure_result_file, output_handle):
             content = h.read()
 
         if content == failure_result_file:
-            if args.skip_return_code is not None and args.skip_return_code == rc:
-                log("-- run_test.py: generate result file '%s' with skipped test" % args.result_file)
-                # regenerate result file to indicate that the test was skipped
-                result_file = _generate_result(args.result_file, skip=True, test_time=test_time)
-            else:
-                log("-- run_test.py: generate result file '%s' with failed test" % args.result_file,
-                    file=sys.stderr)
-                # regenerate result file to include output / exception of the invoked command
-                result_file = _generate_result(
-                    args.result_file,
-                    error_message='The test did not generate a result file:\n\n' + output,
-                    test_time=test_time)
+            log("-- run_test.py: generate result file '%s' with failed test" % args.result_file,
+                file=sys.stderr)
+            # regenerate result file to include output / exception of the invoked command
+            failure_result_file = _generate_result(
+                args.result_file,
+                failure_message='The test did not generate a result file:\n\n' + output)
             with open(args.result_file, 'w') as h:
-                h.write(result_file)
+                h.write(failure_result_file)
         else:
             # prefix classname attributes
             if args.result_file.endswith('.gtest.xml') and args.package_name:
@@ -316,32 +293,29 @@ def _run_test(parser, args, failure_result_file, output_handle):
     return rc
 
 
-def _generate_result(result_file, *, failure_message=None, skip=False, error_message=None, test_time=0):
+def _generate_result(result_file, *, failure_message=None, skip=False):
     # the generated result file must be readable
     # by any of the Jenkins test result report publishers
     pkgname = os.path.basename(os.path.dirname(result_file))
     testname = os.path.splitext(os.path.basename(result_file))[0]
-    error_message = '<error message=%s/>' % quoteattr(error_message) \
-        if error_message else ''
     failure_message = '<failure message=%s/>' % quoteattr(failure_message) \
         if failure_message else ''
     skipped_message = \
         '<skipped type="skip" message="">![CDATA[Test Skipped by developer]]</skipped>' \
         if skip else ''
     return """<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="%s" tests="1" failures="%d" time="%.3f" errors="%d" skipped="%d">
-  <testcase classname="%s" name="%s.missing_result" time="%.3f">
-    %s%s%s
+<testsuite name="%s" tests="1" failures="%d" time="0" errors="0" skip="%d">
+  <testcase classname="%s" name="%s.missing_result" status="%s" time="0">
+    %s%s
   </testcase>
 </testsuite>\n""" % \
         (
             pkgname,
             1 if failure_message else 0,
-            test_time,
-            1 if error_message else 0,
             1 if skip else 0,
-            pkgname, testname, test_time,
-            failure_message, skipped_message, error_message
+            pkgname, testname,
+            'notrun' if skip else 'run',
+            failure_message, skipped_message
         )
 
 

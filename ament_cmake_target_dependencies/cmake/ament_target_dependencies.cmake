@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Open Source Robotics Foundation, Inc.
+# Copyright 2014 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,24 +13,19 @@
 # limitations under the License.
 
 #
-# Add the interface targets or definitions, include directories and libraries
-# of packages to a target.
+# Add the definitions, include directories and libraries of packages to a
+# target.
 #
 # Each package name must have been find_package()-ed before.
 # Additionally the exported variables must have a prefix with the same case
-# and the suffixes must be either _INTERFACES or _DEFINITIONS, _INCLUDE_DIRS,
-# _LIBRARIES, _LIBRARY_DIRS, and _LINK_FLAGS.
-# If _INTERFACES is not empty it will be used exclusively, otherwise the other
-# variables are being used.
-# If _LIBRARY_DIRS is not empty, _LIBRARIES which are not absolute paths already
-# will be searched in those directories and their absolute paths will be used instead.
+# and the suffixes must be _DEFINITIONS, _INCLUDE_DIRS, _LIBRARIES, and
+# _LINK_FLAGS.
 #
 # :param target: the target name
 # :type target: string
-# :param ARGN: a list of package names, which can optionally start with an
-#   INTERFACE or PUBLIC keyword.
-#   If it starts with INTERFACE or PUBLIC, this keyword is used in the
-#   target_* calls.
+# :param ARGN: a list of package names, which could start with PUBLIC keyword.
+#   If it starts with PUBLIC, this keyword is used in the target_link_libraries call.
+#   If not, the non-keyword target_link_libraries call is used.
 # :type ARGN: list of strings
 #
 # @public
@@ -40,108 +35,37 @@ function(ament_target_dependencies target)
     message(FATAL_ERROR "ament_target_dependencies() the first argument must be a valid target name")
   endif()
   if(${ARGC} GREATER 0)
-    cmake_parse_arguments(ARG "INTERFACE;PUBLIC" "" "" ${ARGN})
-    set(optional_keyword "")
-    set(required_keyword "PUBLIC")
-    if(ARG_INTERFACE)
-      if(NOT "${ARGV1}" STREQUAL "INTERFACE")
-        message(FATAL_ERROR "ament_target_dependencies() INTERFACE keyword is only allowed before the package names")
-      endif()
-      set(optional_keyword INTERFACE)
-      set(required_keyword INTERFACE)
-    endif()
+    cmake_parse_arguments(ARG "PUBLIC" "" "" ${ARGN})
+    set(TARGET_LINK_LIBRARIES_VISIBILITY)
     if(ARG_PUBLIC)
       if(NOT "${ARGV1}" STREQUAL "PUBLIC")
         message(FATAL_ERROR "ament_target_dependencies() PUBLIC keyword is only allowed before the package names")
       endif()
-      set(optional_keyword PUBLIC)
+      set(TARGET_LINK_LIBRARIES_VISIBILITY PUBLIC)
     endif()
     set(definitions "")
     set(include_dirs "")
-    set(interfaces "")
     set(libraries "")
     set(link_flags "")
     foreach(package_name ${ARG_UNPARSED_ARGUMENTS})
       if(NOT "${${package_name}_FOUND}")
         message(FATAL_ERROR "ament_target_dependencies() the passed package name '${package_name}' was not found before")
       endif()
-      # if a package provides modern CMake interface targets use them
-      # exclusively assuming the classic CMake variables only exist for
-      # backward compatibility
-      set(use_modern_cmake FALSE)
-      if(NOT "${${package_name}_TARGETS}" STREQUAL "")
-        foreach(_target ${${package_name}_TARGETS})
-          # only use actual targets
-          # in case a package uses this variable for other content
-          if(TARGET "${_target}")
-            list_append_unique(interfaces ${_target})
-            set(use_modern_cmake TRUE)
-          endif()
-        endforeach()
-      endif()
-      if(NOT use_modern_cmake AND NOT "${${package_name}_INTERFACES}" STREQUAL "")
-        foreach(_interface ${${package_name}_INTERFACES})
-          # only use actual targets
-          # in case a package uses this variable for other content
-          if(TARGET "${_interface}")
-            list_append_unique(interfaces ${_interface})
-            set(use_modern_cmake TRUE)
-          endif()
-        endforeach()
-        if(use_modern_cmake)
-          message(DEPRECATION
-            "Package ${package_name} is exporting the variable "
-            "${package_name}_INTERFACES which is deprecated, it should export
-            ${package_name}_TARGETS instead")
-        endif()
-      endif()
-      if(NOT use_modern_cmake)
-        # otherwise use the classic CMake variables
-        list_append_unique(definitions ${${package_name}_DEFINITIONS})
-        list_append_unique(include_dirs ${${package_name}_INCLUDE_DIRS})
-        foreach(library ${${package_name}_LIBRARIES})
-          if(NOT "${${package_name}_LIBRARY_DIRS}" STREQUAL "")
-            if(NOT IS_ABSOLUTE ${library} OR NOT EXISTS ${library})
-              find_library(lib NAMES ${library} PATHS ${${package_name}_LIBRARY_DIRS} NO_DEFAULT_PATH)
-              if(lib)
-                set(library ${lib})
-              endif()
-            endif()
-          endif()
-          list(APPEND libraries ${library})
-        endforeach()
-        list_append_unique(link_flags ${${package_name}_LINK_FLAGS})
-      endif()
+      list_append_unique(definitions ${${package_name}_DEFINITIONS})
+      list_append_unique(include_dirs ${${package_name}_INCLUDE_DIRS})
+      list(APPEND libraries ${${package_name}_LIBRARIES})
+      list_append_unique(link_flags ${${package_name}_LINK_FLAGS})
     endforeach()
-    if(NOT ARG_INTERFACE)
-      target_compile_definitions(${target}
-        ${required_keyword} ${definitions})
-      # the interface include dirs must be ordered
-      set(interface_include_dirs)
-      foreach(interface ${interfaces})
-        get_target_property(_include_dirs ${interface} INTERFACE_INCLUDE_DIRECTORIES)
-        if(_include_dirs)
-          list_append_unique(interface_include_dirs ${_include_dirs})
-        endif()
-      endforeach()
-      ament_include_directories_order(ordered_interface_include_dirs ${interface_include_dirs})
-      # the interface include dirs are used privately to ensure proper order
-      # and the interfaces cover the public case
-      target_include_directories(${target}
-        PRIVATE ${ordered_interface_include_dirs})
-    endif()
+    target_compile_definitions(${target}
+      PUBLIC ${definitions})
     ament_include_directories_order(ordered_include_dirs ${include_dirs})
-    target_link_libraries(${target}
-      ${optional_keyword} ${interfaces})
     target_include_directories(${target}
-      ${required_keyword} ${ordered_include_dirs})
-    if(NOT ARG_INTERFACE)
-      ament_libraries_deduplicate(unique_libraries ${libraries})
-      target_link_libraries(${target}
-        ${optional_keyword} ${unique_libraries})
-      foreach(link_flag IN LISTS link_flags)
-        set_property(TARGET ${target} APPEND_STRING PROPERTY LINK_FLAGS " ${link_flag} ")
-      endforeach()
-    endif()
+      PUBLIC ${ordered_include_dirs})
+    ament_libraries_deduplicate(unique_libraries ${libraries})
+    target_link_libraries(${target}
+      ${TARGET_LINK_LIBRARIES_VISIBILITY} ${unique_libraries})
+    foreach(link_flag IN LISTS link_flags)
+      set_property(TARGET ${target} APPEND_STRING PROPERTY LINK_FLAGS " ${link_flag} ")
+    endforeach()
   endif()
 endfunction()

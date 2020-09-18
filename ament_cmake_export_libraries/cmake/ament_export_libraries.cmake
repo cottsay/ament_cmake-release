@@ -114,12 +114,7 @@ macro(ament_export_libraries)
           # they will be resolved via find_library()
           # relative to the CMAKE_INSTALL_PREFIX
           # when find_package() is invoked from a downstream package
-          get_target_property(_output_name ${_lib} OUTPUT_NAME)
-          if(_output_name)
-            list(APPEND _AMENT_EXPORT_LIBRARIES ${_cfg} "${_output_name}")
-          else()
-            list(APPEND _AMENT_EXPORT_LIBRARIES ${_cfg} "${_lib}")
-          endif()
+          list(APPEND _AMENT_EXPORT_LIBRARIES ${_cfg} "${_lib}")
         endif()
       else()
         # keep plain library names as-is

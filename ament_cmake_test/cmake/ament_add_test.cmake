@@ -30,11 +30,11 @@
 # :param TIMEOUT: the test timeout in seconds, default: 60
 # :type TIMEOUT: integer
 # :param WORKING_DIRECTORY: the working directory for invoking the
-#   command in, default: CMAKE_CURRENT_BINARY_DIR
+#   command in, default: CMAKE_SOURCE_DIR
 # :type WORKING_DIRECTORY: string
 # :param GENERATE_RESULT_FOR_RETURN_CODE_ZERO: generate a test result
 #   file when the command invocation returns with code zero
-#   command in, default: FALSE
+#   command in, default: CMAKE_SOURCE_DIR
 # :type GENERATE_RESULT_FOR_RETURN_CODE_ZERO: option
 # :param SKIP_TEST: if set mark the test as being skipped
 # :type SKIP_TEST: option
@@ -46,16 +46,13 @@
 # :param APPEND_LIBRARY_DIRS: list of library dirs to append to the appropriate
 #   OS specific env var, a la LD_LIBRARY_PATH
 # :type APPEND_LIBRARY_DIRS: list of strings
-# :param SKIP_RETURN_CODE: return code signifying that the test has been
-#   skipped and did not fail OR succeed
-# :type SKIP_RETURN_CODE: integer
 #
 # @public
 #
 function(ament_add_test testname)
   cmake_parse_arguments(ARG
     "GENERATE_RESULT_FOR_RETURN_CODE_ZERO;SKIP_TEST"
-    "OUTPUT_FILE;RESULT_FILE;RUNNER;SKIP_RETURN_CODE;TIMEOUT;WORKING_DIRECTORY"
+    "OUTPUT_FILE;RESULT_FILE;RUNNER;TIMEOUT;WORKING_DIRECTORY"
     "APPEND_ENV;APPEND_LIBRARY_DIRS;COMMAND;ENV"
     ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
@@ -80,7 +77,7 @@ function(ament_add_test testname)
       "valid number and greater than zero")
   endif()
   if(NOT ARG_WORKING_DIRECTORY)
-    set(ARG_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+    set(ARG_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
   endif()
 
   # wrap command with run_test script to ensure test result generation
@@ -89,9 +86,6 @@ function(ament_add_test testname)
     "--package-name" "${PROJECT_NAME}")
   if(ARG_SKIP_TEST)
     list(APPEND cmd_wrapper "--skip-test")
-    set(ARG_SKIP_RETURN_CODE 0)
-  elseif(ARG_SKIP_RETURN_CODE)
-    list(APPEND cmd_wrapper "--skip-return-code" "${ARG_SKIP_RETURN_CODE}")
   endif()
   if(ARG_GENERATE_RESULT_FOR_RETURN_CODE_ZERO)
     list(APPEND cmd_wrapper "--generate-result-on-success")
@@ -130,10 +124,4 @@ function(ament_add_test testname)
     "${testname}"
     PROPERTIES TIMEOUT ${ARG_TIMEOUT}
   )
-  if(DEFINED ARG_SKIP_RETURN_CODE)
-    set_tests_properties(
-      "${testname}"
-      PROPERTIES SKIP_RETURN_CODE ${ARG_SKIP_RETURN_CODE}
-    )
-  endif()
 endfunction()
