@@ -34,6 +34,9 @@ Source0:        %{name}-%{version}.tar.gz
 %autosetup -p1
 
 %build
+# Needed to bootstrap since the ros_workspace package does not yet exist.
+export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
@@ -57,6 +60,9 @@ mkdir -p .obj-%{_target_platform} && cd .obj-%{_target_platform}
 %make_build
 
 %install
+# Needed to bootstrap since the ros_workspace package does not yet exist.
+export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
@@ -65,6 +71,9 @@ if [ -f "@(InstallationPrefix)/setup.sh" ]; then . "@(InstallationPrefix)/setup.
 
 %if 0%{?with_tests}
 %check
+# Needed to bootstrap since the ros_workspace package does not yet exist.
+export PYTHONPATH=@(InstallationPrefix)/lib/python%{python3_version}/site-packages
+
 # Look for a Makefile target with a name indicating that it runs tests
 TEST_TARGET=$(%__make -qp -C .obj-%{_target_platform} | sed "s/^\(test\|check\):.*/\\1/;t f;d;:f;q0")
 if [ -n "$TEST_TARGET" ]; then
