@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake-target-dependencies
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake-core, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-target-dependencies
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-include-directories, ros-rolling-ament-cmake-libraries, ros-rolling-ros-workspace
+Description: The ability to add definitions, include directories and libraries of a package to a target in the ament buildsystem in CMake.
