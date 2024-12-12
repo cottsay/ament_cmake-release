@@ -1,0 +1,27 @@
+From dc99df819f97649814fcbd41824e2a11c9c35b0c Mon Sep 17 00:00:00 2001
+From: Scott K Logan <logans@cottsay.net>
+Date: Thu, 12 Dec 2024 14:29:24 -0600
+Subject: [PATCH 2/2] Detect Python 3 version at build time
+
+Co-authored-by: Jose Luis Rivero <jrivero@osrfoundation.org>
+---
+ debian/rules.em | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/debian/rules.em b/debian/rules.em
+index cacc1d4c5593..3ba9ca92d775 100755
+--- a/debian/rules.em
++++ b/debian/rules.em
+@@ -24,7 +24,8 @@ endif
+ DEB_HOST_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+ 
+ # Needed to bootstrap since the ros_workspace package does not yet exist.
+-export PYTHONPATH=@(InstallationPrefix)/lib/python3.12/site-packages
++PYTHON3_VERSION=$(shell py3versions -d)
++export PYTHONPATH=@(InstallationPrefix)/lib/$(PYTHON3_VERSION)/site-packages
+ 
+ %:
+ 	dh $@@ -v --buildsystem=cmake --builddirectory=.obj-$(DEB_HOST_GNU_TYPE)
+-- 
+2.47.0
+
