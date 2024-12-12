@@ -1,0 +1,13 @@
+Source: ros-rolling-ament-cmake-core
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), cmake, python3-catkin-pkg-modules, ros-rolling-ament-package
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-core
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, cmake, python3-catkin-pkg-modules, ros-rolling-ament-package
+Description: The core of the ament buildsystem in CMake.
+ Several subcomponents provide specific funtionalities: * environment: provide prefix-level setup files * environment_hooks: provide package-level setup files and environment hooks * index: store information in an index and retrieve them without crawling * package_templates: templates from the ament_package Python package * symlink_install: use symlinks for CMake install commands
