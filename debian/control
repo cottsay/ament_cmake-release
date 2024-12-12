@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake-vendor-package
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-export-dependencies, ros-rolling-ament-cmake-test <!nocheck>, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-vendor-package
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, git, python3-vcstool, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-export-dependencies, ros-rolling-ros-workspace
+Description: Macros for maintaining a 'vendor' package.
