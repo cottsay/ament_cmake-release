@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake-gtest
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake-core, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-gtest
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgtest-dev, ros-rolling-ament-cmake-test, ros-rolling-gtest-vendor, ros-rolling-ros-workspace
+Description: The ability to add gtest-based tests in the ament buildsystem in CMake.
