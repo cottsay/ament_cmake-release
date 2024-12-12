@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake-pytest
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), python3-pytest, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-test, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-pytest
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-pytest, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-test, ros-rolling-ros-workspace
+Description: The ability to run Python tests using pytest in the ament buildsystem in CMake.
