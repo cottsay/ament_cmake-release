@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), cmake, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-export-dependencies, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, cmake, ros-rolling-ament-cmake-core, ros-rolling-ament-cmake-export-definitions, ros-rolling-ament-cmake-export-dependencies, ros-rolling-ament-cmake-export-include-directories, ros-rolling-ament-cmake-export-interfaces, ros-rolling-ament-cmake-export-libraries, ros-rolling-ament-cmake-export-link-flags, ros-rolling-ament-cmake-export-targets, ros-rolling-ament-cmake-gen-version-h, ros-rolling-ament-cmake-libraries, ros-rolling-ament-cmake-python, ros-rolling-ament-cmake-target-dependencies, ros-rolling-ament-cmake-test, ros-rolling-ament-cmake-version, ros-rolling-ros-workspace
+Description: The entry point package for the ament buildsystem in CMake.
