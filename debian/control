@@ -1,0 +1,12 @@
+Source: ros-rolling-ament-cmake-export-definitions
+Section: misc
+Priority: optional
+Maintainer: Chris Lalancette <clalancette@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake-core, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-ament-cmake-export-definitions
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-rolling-ament-cmake-core, ros-rolling-ros-workspace
+Description: The ability to export definitions to downstream packages in the ament buildsystem.
