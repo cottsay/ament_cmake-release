@@ -2,38 +2,87 @@
 Changelog for package ament_cmake_pytest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.3.11 (2024-11-25)
--------------------
-
-1.3.10 (2024-07-26)
--------------------
-
-1.3.9 (2024-05-15)
+2.7.2 (2024-11-19)
 ------------------
 
-1.3.8 (2024-02-16)
+2.7.1 (2024-10-03)
 ------------------
 
-1.3.7 (2024-01-24)
+2.7.0 (2024-06-25)
+------------------
+* Don't write Python bytecode when invoking pytest (`#533 <https://github.com/ament/ament_cmake/issues/533>`_)
+* Contributors: Scott K Logan
+
+2.6.1 (2024-06-17)
 ------------------
 
-1.3.6 (2023-11-13)
-------------------
-* backport merge `#381 <https://github.com/ament/ament_cmake/issues/381>`_ to humble (`#490 <https://github.com/ament/ament_cmake/issues/490>`_)
-* Contributors: El Jawad Alaa
-
-1.3.5 (2023-06-22)
-------------------
-* Fix pytest-cov version detection with pytest >=7.0.0 (`#459 <https://github.com/ament/ament_cmake/issues/459>`_)
-* Contributors: Christophe Bedard
-
-1.3.4 (2023-04-25)
+2.6.0 (2024-04-26)
 ------------------
 
-1.3.3 (2022-11-07)
+2.5.0 (2024-04-16)
 ------------------
 
-1.3.2 (2022-05-17)
+2.4.0 (2024-03-28)
+------------------
+* Update maintainer list in package.xml files (`#503 <https://github.com/ament/ament_cmake/issues/503>`_)
+* Contributors: Michael Jeronimo
+
+2.3.2 (2023-12-26)
+------------------
+
+2.3.1 (2023-11-06)
+------------------
+
+2.3.0 (2023-09-07)
+------------------
+
+2.2.2 (2023-08-21)
+------------------
+
+2.2.1 (2023-06-21)
+------------------
+
+2.2.0 (2023-06-07)
+------------------
+
+2.1.0 (2023-04-26)
+------------------
+
+2.0.2 (2023-04-12)
+------------------
+* Fix test skipping logic for missing pytest module (`#441 <https://github.com/ament/ament_cmake/issues/441>`_)
+* Add missing buildtool_depend on python3-pytest (`#440 <https://github.com/ament/ament_cmake/issues/440>`_)
+* Contributors: Scott K Logan
+
+2.0.1 (2023-04-11)
+------------------
+* ament_cmake_pytest needs a buildtool_depend on ament_cmake_test. (`#439 <https://github.com/ament/ament_cmake/issues/439>`_)
+* Contributors: Chris Lalancette
+
+2.0.0 (2023-04-11)
+------------------
+* Fix pytest-cov version detection with pytest >=7.0.0 (`#436 <https://github.com/ament/ament_cmake/issues/436>`_)
+* use the error handler replace to allow non-utf8 to be decoded (`#381 <https://github.com/ament/ament_cmake/issues/381>`_)
+* Contributors: Christophe Bedard, El Jawad Alaa
+
+1.5.3 (2023-02-13)
+------------------
+* [rolling] Update maintainers - 2022-11-07 (`#411 <https://github.com/ament/ament_cmake/issues/411>`_)
+  * Update maintainers to Michael Jeronimo
+* Contributors: Audrow Nash
+
+1.5.2 (2022-11-02)
+------------------
+
+1.5.1 (2022-09-13)
+------------------
+* Add NOCAPTURE option to ament_add_pytest_test (`#393 <https://github.com/ament/ament_cmake/issues/393>`_)
+* Contributors: Jacob Perron
+
+1.5.0 (2022-07-11)
+------------------
+
+1.4.0 (2022-04-29)
 ------------------
 
 1.3.1 (2022-03-28)

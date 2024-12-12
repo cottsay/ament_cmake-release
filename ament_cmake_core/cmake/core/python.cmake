@@ -18,21 +18,21 @@
 #   find_package(Python3 3.8 REQUIRED)
 #   find_package(ament_cmake REQUIRED)
 if(NOT TARGET Python3::Interpreter)
-  # We expect that Python dependencies are met for whatever Python interpreter
-  # is invoked by the "python3" executable, however this may not be the latest
-  # Python version installed on the system. The default behavior of
-  # find_package(Python3) is to use the latest version (e.x. python3.12), so we
-  # specifically look for a "python3" executable and if found, instruct
-  # find_package(Python3) to use that.
-  # On Windows, the find_package(Python3) logic is different and doesn't
-  # appear to prefer specific versions (e.x. python3.12) over plain
-  # "python.exe" so this extra logic is unnecessary there.
-  if(NOT WIN32 AND NOT Python3_EXECUTABLE)
-    find_program(Python3_EXECUTABLE python3)
-  endif()
-  
-  # FindPython3 is only available in CMake 3.12 or higher,
-  # so we need at least that version.
-  cmake_minimum_required(VERSION 3.12)
+  # By default, without the settings below, find_package(Python3) will attempt
+  # to find the newest python version it can, and additionally will find the
+  # most specific version.  For instance, on a system that has
+  # /usr/bin/python3.10, /usr/bin/python3.11, and /usr/bin/python3, it will find
+  # /usr/bin/python3.11, even if /usr/bin/python3 points to /usr/bin/python3.10.
+  # The behavior we want is to prefer the "system" installed version unless the
+  # user specifically tells us othewise through the Python3_EXECUTABLE hint.
+  # Setting CMP0094 to NEW means that the search will stop after the first
+  # python version is found.  Setting Python3_FIND_UNVERSIONED_NAMES means that
+  # the search will prefer /usr/bin/python3 over /usr/bin/python3.11.  And that
+  # latter functionality is only available in CMake 3.20 or later, so we need
+  # at least that version.
+  cmake_minimum_required(VERSION 3.20)
+  cmake_policy(SET CMP0094 NEW)
+  set(Python3_FIND_UNVERSIONED_NAMES FIRST)
+
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
 endif()

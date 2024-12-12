@@ -2,40 +2,102 @@
 Changelog for package ament_cmake_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.3.11 (2024-11-25)
--------------------
-
-1.3.10 (2024-07-26)
--------------------
-* More specific prefix in some cmake_parse_argument calls (`#523 <https://github.com/ament/ament_cmake/issues/523>`_) (`#538 <https://github.com/ament/ament_cmake/issues/538>`_)
-* Contributors: mergify[bot]
-
-1.3.9 (2024-05-15)
+2.7.2 (2024-11-19)
 ------------------
-* Add minimum required CMake for FindPython3 (`#518 <https://github.com/ament/ament_cmake/issues/518>`_)
-* Contributors: Ryan
-
-1.3.8 (2024-02-16)
-------------------
-* When finding Python3, use python3 executable as a hint (`#507 <https://github.com/ament/ament_cmake/issues/507>`_)
+* Support generator expressions when symlinking install(FILES) (`#560 <https://github.com/ament/ament_cmake/issues/560>`_)
+* Always symlink TARGET\_{LINKER,SONAME}_FILE on libraries (`#535 <https://github.com/ament/ament_cmake/issues/535>`_)
+* Fix symlink install of versioned libs on macOS (`#558 <https://github.com/ament/ament_cmake/issues/558>`_)
 * Contributors: Scott K Logan
 
-1.3.7 (2024-01-24)
+2.7.1 (2024-10-03)
 ------------------
 
-1.3.6 (2023-11-13)
+2.7.0 (2024-06-25)
 ------------------
 
-1.3.5 (2023-06-22)
+2.6.1 (2024-06-17)
+------------------
+* More specific prefix in some cmake_parse_argument calls (`#523 <https://github.com/ament/ament_cmake/issues/523>`_)
+* Contributors: Kevin Egger
+
+2.6.0 (2024-04-26)
 ------------------
 
-1.3.4 (2023-04-25)
+2.5.0 (2024-04-16)
 ------------------
 
-1.3.3 (2022-11-07)
+2.4.0 (2024-03-28)
+------------------
+* Set hints to find the python version we actually want. (`#508 <https://github.com/ament/ament_cmake/issues/508>`_)
+* Update maintainer list in package.xml files (`#503 <https://github.com/ament/ament_cmake/issues/503>`_)
+* Contributors: Chris Lalancette, Michael Jeronimo
+
+2.3.2 (2023-12-26)
 ------------------
 
-1.3.2 (2022-05-17)
+2.3.1 (2023-11-06)
+------------------
+* Use CMAKE_CURRENT_BINARY_DIR instead of CMAKE_BINARY_DIR  in ament_generate_environment (`#485 <https://github.com/ament/ament_cmake/issues/485>`_)
+* Fix CMake error when entire ament projects are added via add_subdirectory (`#484 <https://github.com/ament/ament_cmake/issues/484>`_)
+* Contributors: Silvio Traversaro
+
+2.3.0 (2023-09-07)
+------------------
+
+2.2.2 (2023-08-21)
+------------------
+
+2.2.1 (2023-06-21)
+------------------
+
+2.2.0 (2023-06-07)
+------------------
+
+2.1.0 (2023-04-26)
+------------------
+
+2.0.2 (2023-04-12)
+------------------
+
+2.0.1 (2023-04-11)
+------------------
+
+2.0.0 (2023-04-11)
+------------------
+* ament_cmake_uninstall_target: Correct location of install_manifest.txt (`#432 <https://github.com/ament/ament_cmake/issues/432>`_)
+* Contributors: Silvio Traversaro
+
+1.5.3 (2023-02-13)
+------------------
+* Use file(GENERATE OUTPUT) to create dsv files (`#416 <https://github.com/ament/ament_cmake/issues/416>`_)
+  Using file(WRITE) and file(APPEND) causes the modification stamp of the
+  file to be changed each time CMake configures, resluting in an
+  'Installing' message rather than an 'Up-to-date' message even though the
+  file content is identical.
+  Using file(GENERATE OUTPUT) updates the timestamp of the file only if
+  the content changes.
+* Warn when trying to symlink install an INTERFACE_LIBRARY (`#417 <https://github.com/ament/ament_cmake/issues/417>`_)
+* Workaround to exclude Clion's cmake folders from colcon test (`#410 <https://github.com/ament/ament_cmake/issues/410>`_)
+  - Add AMENT_IGNORE to CMAKE_BINARY_DIR to avoid picking up cmake
+  specific folders created by CLion in `colcon build` and `colcon test`
+  commands
+* if (NOT ${UNDEFINED_VAR}) gets evaluated to false, so change to if (NOT UNDEFINED_VAR) so it evaluates to true. (`#407 <https://github.com/ament/ament_cmake/issues/407>`_)
+* [rolling] Update maintainers - 2022-11-07 (`#411 <https://github.com/ament/ament_cmake/issues/411>`_)
+  * Update maintainers to Michael Jeronimo
+* Contributors: Audrow Nash, Kenji Brameld, Michael Orlov, Scott K Logan, Shane Loretz
+
+1.5.2 (2022-11-02)
+------------------
+
+1.5.1 (2022-09-13)
+------------------
+
+1.5.0 (2022-07-11)
+------------------
+* Implement ament_add_default_options (`#390 <https://github.com/ament/ament_cmake/issues/390>`_)
+* Contributors: methylDragon
+
+1.4.0 (2022-04-29)
 ------------------
 
 1.3.1 (2022-03-28)
